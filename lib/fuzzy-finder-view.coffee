@@ -224,6 +224,8 @@ class FuzzyFinderView extends SelectListView
     query = query[0...colon] if colon isnt -1
     # Normalize to backslashes on Windows
     query = query.replace(/\//g, '\\') if process.platform is 'win32'
+    # users should be able to match project files by relative or absolute paths
+    [..., query] = atom.project.relativizePath(query)
     query
 
   getLineNumber: ->

@@ -737,6 +737,19 @@ describe 'FuzzyFinder', ->
         expect(atom.workspace.getActivePane()).toBe bottomPane
         expect(atom.workspace.getActiveTextEditor().getPath()).toBe atom.project.getDirectories()[0].resolve(filePath)
 
+  describe "when the filter text is an absolute path of a file in the project directory", ->
+    it "displays the relative path of the file", ->
+      fileName = 'sample.txt'
+      absolutePath = path.join(rootDir1, fileName)
+
+      waitsForPromise -> atom.workspace.open fileName
+      runs -> dispatchCommand('toggle-file-finder')
+      projectView.filterEditorView.getModel().setText(absolutePath)
+      waitForPathsToDisplay(projectView)
+
+      runs ->
+        expect(projectView.list.find("li:eq(0)").text()).toContain(fileName)
+
   describe "when the filter text contains a colon followed by a number", ->
     beforeEach ->
       jasmine.attachToDOM(workspaceElement)
